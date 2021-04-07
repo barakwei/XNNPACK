@@ -39,7 +39,7 @@ ARM_DIR=build/ios/arm64
 mkdir -p "${ARM_DIR}"
 
 cd "${ARM_DIR}" && cmake ../../.. "${CMAKE_ARGS_ARM[@]}" && cmake --build . -- "-j$(nproc)"
-
+libtool -static -o libXNNPACK.a libXNNPACK.a clog/libclog.a cpuinfo/libcpuinfo.a pthreadpool/libpthreadpool.a
 
 # Build for simulator
 CMAKE_ARGS_X86=("${CMAKE_ARGS_COMMON[@]}")
@@ -52,6 +52,7 @@ X86_DIR=build/ios/x86_64
 mkdir -p "${X86_DIR}"
 
 cd "${X86_DIR}" && cmake ../../.. "${CMAKE_ARGS_X86[@]}" && cmake --build . -- "-j$(nproc)"
+libtool -static -o libXNNPACK.a libXNNPACK.a clog/libclog.a cpuinfo/libcpuinfo.a pthreadpool/libpthreadpool.a
 
 # Prepare installation artefacts
 INSTALL_DIR=build/install
@@ -63,9 +64,6 @@ mkdir -p "${INCLUDE_DIR}"
 mkdir -p "${LIB_DIR}"
 
 lipo "${ARM_DIR}"/libXNNPACK.a "${X86_DIR}"/libXNNPACK.a -create -o "${LIB_DIR}"/libXNNPACK.a
-lipo "${ARM_DIR}"/clog/libclog.a "${X86_DIR}"/clog/libclog.a -create -o "${LIB_DIR}"/libclog.a
-lipo "${ARM_DIR}"/cpuinfo/libcpuinfo.a "${X86_DIR}"/cpuinfo/libcpuinfo.a -create -o "${LIB_DIR}"/libcpuinfo.a
-lipo "${ARM_DIR}"/pthreadpool/libpthreadpool.a "${X86_DIR}"/pthreadpool/libpthreadpool.a -create -o "${LIB_DIR}"/libpthreadpool.a
 
 cp include/xnnpack.h "${INCLUDE_DIR}"
 cp "${ARM_DIR}"/pthreadpool-source/include/pthreadpool.h "${INCLUDE_DIR}"
